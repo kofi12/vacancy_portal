@@ -1,0 +1,17 @@
+[tool.poetry]
+name = "vacancy-portal"
+version = "0.1.0"
+description = ""
+authors = ["kofi12 <kofi12@my.yorku.ca>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+fastapi = "^0.111.0"
+python-multipart = "^0.0.9"
+uvicorn = "^0.30.1"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
