@@ -3,8 +3,7 @@ from datetime import datetime
 
 class Tenant (SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
-    first_name: str
-    last_name: str
+    name: str
     admission_date: datetime | None = Field(default = None)
     discharge_date: datetime | None = Field(default=None)
 
