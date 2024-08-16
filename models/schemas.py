@@ -13,6 +13,7 @@ class UserBase(BaseModel):
     name: str
     organization: str
     role: str
+    password: str
 
 class UserUpdate(BaseModel):
     name: str | None = None

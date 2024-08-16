@@ -12,3 +12,4 @@ class User (SQLModel, table=True):
     name: str
     organization: str
     role: str
+    hashed_password: str
