@@ -9,7 +9,7 @@ from database import user_dao
 user_router = APIRouter(prefix='/users')
 
 #sign-up
-@user_router.post('/signup', response_model=User)
+@user_router.post('/signup', response_model=User, response_model_exclude={"hashed_password"})
 def user_create(user_data: UserBase,
                 db: Session = Depends(get_session)):
     return user_dao.create_user(user_data, db)
@@ -19,7 +19,7 @@ def user_get(id: int,
              db: Session = Depends(get_session)):
     return user_dao.get_user(id, db)
 
-@user_router.put('/update/{id}')
+@user_router.put('/update/{id}', response_model_exclude_unset=True)
 def user_update(id: int, user_update: UserUpdate,
                  db: Session = Depends(get_session)):
     user_dao.update_user(id, user_update, db)

@@ -22,7 +22,7 @@ def tenant_get(id: int,
              db: Session = Depends(get_session)):
     return tenant_dao.get_tenant(id, db)
 
-@tenant_router.put('/update/{id}')
+@tenant_router.put('/update/{id}', response_model_exclude_unset=True)
 def tenant_up(id: int, tenant_update: TenantUpdate,
                  db: Session = Depends(get_session)):
     tenant_dao.update_tenant(id, tenant_update, db)
