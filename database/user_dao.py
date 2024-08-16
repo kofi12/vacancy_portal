@@ -3,7 +3,7 @@ from fastapi.exceptions import HTTPException
 from sqlmodel import Session, select
 from models.models import User
 from models.schemas import UserUpdate, UserBase
-from db import get_session
+from .db import get_session
 from controller.utils import hash_passwd
 
 #create user

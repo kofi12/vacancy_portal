@@ -3,7 +3,7 @@ from fastapi.exceptions import HTTPException
 from models.models import Tenant
 from models.schemas import TenantBase, TenantUpdate
 from sqlmodel import Session, select
-from db import get_session
+from .db import get_session
 
 #create tenant
 def create_tenant(tenant_data: TenantBase,
@@ -19,7 +19,24 @@ def create_tenant(tenant_data: TenantBase,
         db.commit()
         return tenant
 
-    raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Tenant with email already exists")
+    raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Tenant already exists")
+
+def create_waitlist_tenant(tenant_data: TenantBase,
+                  db: Session = Depends(get_session)):
+    tenant_data_dict = tenant_data.model_dump()
+
+    if not tenant_exists(tenant_data, db):
+        tenant = Tenant(
+            **tenant_data_dict,
+            waitlist = True
+        )
+
+        db.add(tenant)
+        db.commit()
+        return tenant
+
+    raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Potential Tenant already on waitlist")
+
 
 #read tenant
 def get_tenant(id: int,

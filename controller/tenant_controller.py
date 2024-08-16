@@ -8,9 +8,14 @@ from database import tenant_dao
 tenant_router = APIRouter(prefix='/tenants')
 
 @tenant_router.post('/create-tenant', response_model=Tenant)
-def user_create(user_data: TenantBase,
+def tenant_create(user_data: TenantBase,
                 db: Session = Depends(get_session)):
     return tenant_dao.create_tenant(user_data, db)
+
+@tenant_router.post('/create-waitlist-tenant', response_model=Tenant)
+def waitlist_tenant_create(user_data: TenantBase,
+                db: Session = Depends(get_session)):
+    return tenant_dao.create_waitlist_tenant(user_data, db)
 
 @tenant_router.get('/tenant/{id}')
 def tenant_get(id: int,
