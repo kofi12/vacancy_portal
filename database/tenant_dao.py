@@ -22,7 +22,7 @@ def get_tenant(id: int, db: Session = Depends(get_session)) -> Tenant | None:
     return result
 
 #update tenant
-def update_tenant_admission(id: int, tenant_update : TenantUpdate,
+def update_tenant(id: int, tenant_update : TenantUpdate,
                             db: Session = Depends(get_session)):
     statement = select(Tenant).where(Tenant.id == id)
     try:
@@ -51,4 +51,9 @@ def delete_tenant(id: int, db: Session = Depends(get_session)):
     db.delete(tenant)
 
 #get all tenants
+def get_tenants(db: Session = Depends(get_session)):
+    tenants = []
+    statement = select(Tenant)
+    tenants = db.exec(statement).all()
 
+    return {'tenants': tenants}

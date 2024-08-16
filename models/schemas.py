@@ -14,3 +14,7 @@ class UserBase(BaseModel):
     organization: str
     role: str
 
+class UserUpdate(BaseModel):
+    name: str | None = None
+    admission_date: datetime | None = None
+    discharge_date: datetime | None = None
