@@ -21,8 +21,6 @@ def create_tenant(tenant_data: TenantBase,
 
     raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Tenant with email already exists")
 
-
-
 #read tenant
 def get_tenant(id: int,
                db: Session = Depends(get_session)) -> Tenant | None:
@@ -63,10 +61,17 @@ def delete_tenant(id: int, db: Session = Depends(get_session)):
 #get all tenants
 def get_tenants(db: Session = Depends(get_session)):
     tenants = []
-    statement = select(Tenant)
+    statement = select(Tenant).where(Tenant.waitlist == False)
     tenants = db.exec(statement).all()
 
     return {'tenants': tenants}
+
+def get_waitlist_tenants(db: Session = Depends(get_session)):
+    waitlist = []
+    statement = select(Tenant).where(Tenant.waitlist == True)
+    waitlist = db.exec(statement).all()
+
+    return {'waitlist': waitlist}
 
 def tenant_exists(tenant_data: TenantBase,
                 db: Session = Depends(get_session)) -> bool:

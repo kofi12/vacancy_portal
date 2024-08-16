@@ -6,6 +6,7 @@ class Tenant (SQLModel, table=True):
     name: str
     admission_date: datetime | None = Field(default = None)
     discharge_date: datetime | None = Field(default=None)
+    waitlist: bool = Field(default=False)
 
 class User (SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)

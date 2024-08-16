@@ -23,7 +23,6 @@ def create_user(user_data: UserBase,
 
     raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="User with email already exists")
 
-
 #read user
 def get_user(id: int, db: Session = Depends(get_session)) -> User | None:
     statement = select(User).where(id == User.id)
