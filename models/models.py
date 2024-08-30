@@ -18,3 +18,10 @@ class User (SQLModel, table=True):
     organization: str
     role: str
     hashed_password: str
+
+class Document (SQLModel, table=True):
+    __tablename__: str = "documents"
+    id: int | None = Field(default=None, primary_key=True)
+    file_name: str | None
+    url: str | None
+    tenant_id: int | None = Field(default=None, foreign_key='tenants.id')
