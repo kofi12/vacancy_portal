@@ -22,3 +22,7 @@ class UserUpdate(BaseModel):
     name: str | None = None
     admission_date: datetime | None = None
     discharge_date: datetime | None = None
+
+class DocumentDown (BaseModel):
+    file_name: str
+    url: str

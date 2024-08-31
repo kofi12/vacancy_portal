@@ -5,17 +5,26 @@ from database.db import get_session
 import boto3
 
 BUCKET_NAME = 'vacancy-portal'
+AWS_REGION = 'us-east-2'
 
-def upload_f(file: UploadFile, object_name: str,
+def upload_f(file: UploadFile, tenant_id: int,
              db : Session = Depends(get_session)):
 
+    print('Hitting endpiont')
+    print(file)
+    print(file.content_type)
     #Upload file
     s3 = boto3.client('s3')
-    s3.upload_fileobj(file, BUCKET_NAME, ExtraArgs={"ACL": "public-read"})
-
+    s3.upload_fileobj(file.file,
+                      BUCKET_NAME,
+                      file.filename)
 
     #Store file url in Document table
-    file_url = f"https://{BUCKET_NAME}.s3.amazonaws.com/{file.filename}"
-    statement = ''
+    file_url = f"https://{BUCKET_NAME}.s3.{AWS_REGION}.amazonaws.com/{file.filename}"
+    document = Document(file_name=file.filename,
+                        url=file_url,
+                        tenant_id=tenant_id)
 
-    pass
+    db.add(document)
+    db.commit()
+    return document

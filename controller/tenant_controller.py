@@ -1,10 +1,11 @@
 from fastapi import Depends, status, APIRouter, UploadFile
 from models.models import Tenant
-from models.schemas import TenantUpdate, TenantBase
+from models.schemas import TenantUpdate, TenantBase, DocumentDown
 from sqlmodel import Session
 from database.db import get_session
 from database import tenant_dao
-from upload_pdf import upload_f
+from controller.upload_pdf import upload_f
+from controller.download_pdf import download_f
 
 tenant_router = APIRouter(prefix='/tenants')
 
@@ -41,6 +42,10 @@ def get_all_tenants(db: Session = Depends(get_session)):
 def get_waitlist(db: Session = Depends(get_session)):
     return tenant_dao.get_waitlist_tenants(db)
 
-@tenant_router.post('/upload-pdf')
-def upload(file: UploadFile, db: Session = Depends(get_session)):
-    pass
+@tenant_router.post('/upload-pdf/{id}')
+def upload(file: UploadFile, id: int, db: Session = Depends(get_session)):
+    return upload_f(file, id, db)
+
+@tenant_router.get('/download-pdf/{id}')
+def download(id: int, db: Session = Depends(get_session)):
+    return download_f(id, db)
