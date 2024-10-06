@@ -14,6 +14,8 @@ def create_tenant(tenant_data: TenantBase,
             **tenant_data_dict
         )
         db.add(tenant)
+        db.commit()
+        db.refresh(tenant)
         return tenant
 
     raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Tenant already exists")
@@ -30,6 +32,7 @@ def create_waitlist_tenant(tenant_data: TenantBase,
 
         db.add(tenant)
         db.commit()
+        db.refresh(tenant)
         return tenant
 
     raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Potential Tenant already on waitlist")
@@ -58,6 +61,7 @@ def update_tenant(id: int, tenant_update : TenantUpdate,
     )
     # for k, v in updated_data.items():
     #     setattr(tenant, k, v)
+    updated_tenant = {"data": tenant}
     db.commit()
     db.refresh(tenant)
 

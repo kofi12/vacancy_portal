@@ -19,6 +19,7 @@ def create_user(user_data: UserBase,
 
         db.add(user)
         db.commit()
+        db.refresh(user)
         return user
 
     raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="User with email already exists")
