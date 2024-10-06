@@ -14,7 +14,7 @@ def user_create(user_data: UserBase,
                 db: Session = Depends(get_session)):
     return user_dao.create_user(user_data, db)
 
-@user_router.get('/user/{id}')
+@user_router.get('/user/{id}', response_model=User)
 def user_get(id: int,
              db: Session = Depends(get_session)):
     return user_dao.get_user(id, db)

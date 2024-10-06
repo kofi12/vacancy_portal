@@ -9,14 +9,11 @@ from .db import get_session
 def create_tenant(tenant_data: TenantBase,
                   db: Session = Depends(get_session)):
     tenant_data_dict = tenant_data.model_dump()
-
     if not tenant_exists(tenant_data, db):
         tenant = Tenant(
             **tenant_data_dict
         )
-
         db.add(tenant)
-        db.commit()
         return tenant
 
     raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Tenant already exists")
