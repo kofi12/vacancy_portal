@@ -1,4 +1,4 @@
-from fastapi import Depends, HTTPException, UploadFile, status
+from fastapi import Depends, HTTPException, status
 from sqlmodel import Session, select
 from models.models import Document, Tenant
 from models.schemas import DocumentDown
@@ -8,8 +8,8 @@ import boto3
 BUCKET_NAME = 'vacancy-portal'
 AWS_REGION = 'us-east-2'
 
-def download_f(id: int, db: Session = Depends(get_session)):
-    statement = select(Document).where(Document.id == id)
+def download_f(d_id: int, db: Session = Depends(get_session)):
+    statement = select(Document).where(Document.id == d_id)
     try:
         doc = db.exec(statement).first()
     except:

@@ -1,4 +1,3 @@
-from datetime import datetime, timedelta, timezone
 from fastapi import Depends
 from sqlmodel import Session
 from database.db import get_session
@@ -11,9 +10,9 @@ def hash_passwd(password: str) -> str:
     hashed_password = bcrypt.hashpw(password=pwd_bytes, salt=salt)
     return hashed_password.decode('utf-8')
 
-def verify_passwd(password: str, hash: str) -> bool:
+def verify_passwd(password: str, hash_p: str) -> bool:
     password_byte_enc = password.encode('utf-8')
-    hash_byte_enc = hash.encode('utf-8')
+    hash_byte_enc = hash_p.encode('utf-8')
     return bcrypt.checkpw(password = password_byte_enc , hashed_password = hash_byte_enc)
 
 def authenticate_user(user_name: str, password: str,
