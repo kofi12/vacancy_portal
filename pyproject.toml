@@ -19,6 +19,8 @@ bcrypt = "^4.2.0"
 boto3 = "^1.34.162"
 propelauth-fastapi = "^2.1.19"
 fastapi-sso = "^0.15.0"
+python-jose = "^3.3.0"
+passlib = "^1.7.4"
 
 
 [build-system]

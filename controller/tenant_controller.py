@@ -1,6 +1,6 @@
 from fastapi import Depends, status, APIRouter, UploadFile
 from models.models import Tenant
-from models.schemas import TenantUpdate, TenantBase, DocumentDown
+from models.schemas import TenantUpdate, TenantBase
 from sqlmodel import Session
 from database.db import get_session
 from database import tenant_dao

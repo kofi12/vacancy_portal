@@ -14,7 +14,7 @@ class User (SQLModel, table=True):
     __tablename__: str = "users"
     id: int | None = Field(default=None, primary_key=True)
     email: str = Field(sa_column=Column("email", String, unique=True))
-    name: str
+    username: str
     organization: str
     role: str
     hashed_password: str
