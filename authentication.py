@@ -4,8 +4,9 @@ from jose.constants import ALGORITHMS
 from fastapi.security import OAuth2PasswordBearer, APIKeyCookie
 from fastapi import Depends, HTTPException, status
 from fastapi_sso.sso.base import OpenID
-from sqlalchemy.orm import Session
 from models.models import User
+from sqlmodel import Session, select
+from database.user_dao import get_user_by_email
 import uuid
 from database.db import get_session
 from pathlib import Path
@@ -56,7 +57,12 @@ def create_access_token(user_dict: OpenID | None):
 
 def get_token_payload(session_token: str):
     try:
-        payload = jwt.decode(session_token, JWT_SECRET, algorithms=JWT_ALGO)
+        print("before decode")
+        payload = jwt.decode(
+            token=session_token,
+            key=JWT_SECRET,
+            algorithms=[JWT_ALGO]
+        )
         user = payload['user']
         if user is None:
             raise BearAuthException("Token could not be validated")
@@ -80,15 +86,38 @@ def get_current_user(db: Session = Depends(get_session), session_token: str = De
     try:
         if not session_token:
             return None
-        userdata = get_token_payload(session_token)
-        email = userdata['user']['email']
+        user_data = get_token_payload(session_token)
+        email = user_data['user']['email']
     except BearAuthException:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Could not validate bearer token",
             headers={"WWW-Authenticate": "Bearer"}
         )
-    user = db.query(User).filter(User.email == email).first()
+    user = db.exec(select(User).where(User.email == email)).first()
     if not user:
         return None
     return user
+
+def has_role(db: Session = Depends(get_session) , session_token: str = Depends(COOKIE)):
+    try:
+        if not session_token:
+            return None
+        print("here")
+        user_data = get_token_payload(session_token)
+        print(user_data)
+        email = user_data['user']['email']
+        user = get_user_by_email(email, db)
+
+        if user and user.role == 'member':
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail='insufficient permissions'
+            )
+        return user
+    except:
+        raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail='insufficient permissions',
+                headers={"WWW-Authenticate": "Bearer"}
+        )

@@ -8,6 +8,7 @@ from .db import get_session
 #create tenant
 def create_tenant(tenant_data: TenantBase,
                   db: Session = Depends(get_session)):
+    print("do i enter?")
     tenant_data_dict = tenant_data.model_dump()
     if not tenant_exists(tenant_data, db):
         tenant = Tenant(

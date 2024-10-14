@@ -14,7 +14,6 @@ def create_user(user_data: UserBase,
     if not user_exists(user_data, db):
         user = User(
             **user_data_dict,
-            hashed_password = hash_passwd(user_data_dict['password'])
         )
 
         db.add(user)
@@ -47,7 +46,7 @@ def update_user(id: int, user_update : UserUpdate,
     # for k, v in updated_data.items():
     #     setattr(user, k, v)
     db.commit()
-    db.refresh(user)
+    # db.refresh(user)
 
 #delete user
 def delete_user(id: int, db: Session = Depends(get_session)):
@@ -62,14 +61,14 @@ def delete_user(id: int, db: Session = Depends(get_session)):
 
 def user_exists(user_data: UserBase,
                 session: Session = Depends(get_session)) -> bool:
-    name = user_data.name
-    user = get_user_by_name(name, session)
+    email = user_data.email
+    user = get_user_by_email(email, session)
     if user is None:
         return False
     return True
 
-def get_user_by_name(name: str,
+def get_user_by_email(email: str,
                      db: Session = Depends(get_session)):
-    statement = select(User).where(User.name == name)
+    statement = select(User).where(User.email == email)
     result = db.exec(statement).first()
     return result

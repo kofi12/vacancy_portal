@@ -6,22 +6,16 @@ from database.db import get_session
 from database import tenant_dao
 from controller.upload_pdf import upload_f
 from controller.download_pdf import download_f
-from propelauth_fastapi import User
-from propelauth_fastapi import init_auth
+from models.models import User
 from dotenv import load_dotenv
+from authentication import get_current_user, has_role
 import os
-
-load_dotenv()
-AUTH_URL = os.getenv('AUTH_URL', '')
-AUTH_API_KEY = os.getenv('AUTH_API_KEY', '')
-
-auth = init_auth(AUTH_URL, AUTH_API_KEY)
 
 tenant_router = APIRouter(prefix='/tenants')
 
 @tenant_router.post('/create-tenant', response_model=Tenant, tags=["Tenants"])
 def tenant_create(user_data: TenantBase,
-                db: Session = Depends(get_session)):
+                db: Session = Depends(get_session), user: User = Depends(has_role)):
     return tenant_dao.create_tenant(user_data, db)
 
 @tenant_router.post('/create-waitlist-tenant', response_model=Tenant, tags=["Tenants"])
@@ -30,18 +24,18 @@ def waitlist_tenant_create(user_data: TenantBase,
     return tenant_dao.create_waitlist_tenant(user_data, db)
 
 @tenant_router.get('/tenant/{id}', tags=["Tenants"])
-def tenant_get(t_id: int, current_user: User= Depends(auth.require_user),
+def tenant_get(t_id: int,
                db: Session = Depends(get_session)):
     return tenant_dao.get_tenant(t_id, db)
 
 @tenant_router.put('/update/{id}', response_model_exclude_unset=True, tags=["Tenants"])
 def tenant_up(t_id: int, tenant_update: TenantUpdate,
-              db: Session = Depends(get_session)):
+              db: Session = Depends(get_session), user: User = Depends(has_role)):
     tenant_dao.update_tenant(t_id, tenant_update, db)
 
 @tenant_router.delete('/delete/{id}', tags=["Tenants"])
 def user_delete(t_id: int,
-                db: Session = Depends(get_session)):
+                db: Session = Depends(get_session), user: User = Depends(has_role)):
     tenant_dao.delete_tenant(t_id, db)
 
 @tenant_router.get('/all-tenants', tags=["Tenants"])

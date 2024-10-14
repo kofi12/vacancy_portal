@@ -14,10 +14,10 @@ class User (SQLModel, table=True):
     __tablename__: str = "users"
     id: int | None = Field(default=None, primary_key=True)
     email: str = Field(sa_column=Column("email", String, unique=True))
-    username: str
-    organization: str
-    role: str
-    hashed_password: str
+    first_name: str | None
+    last_name: str | None
+    organization: str | None
+    role: str | None = Field(default='member')
 
 class Document (SQLModel, table=True):
     __tablename__: str = "documents"
