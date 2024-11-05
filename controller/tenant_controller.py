@@ -8,14 +8,14 @@ from controller.upload_pdf import upload_f
 from controller.download_pdf import download_f
 from models.models import User
 from dotenv import load_dotenv
-from authentication import get_current_user, has_role
+from authentication import get_current_user
 import os
 
 tenant_router = APIRouter(prefix='/tenants')
 
 @tenant_router.post('/create-tenant', response_model=Tenant, tags=["Tenants"])
-def tenant_create(user_data: TenantBase,
-                db: Session = Depends(get_session), user: User = Depends(has_role)):
+def tenant_create(user_data: TenantBase, user: User,
+                db: Session = Depends(get_session)):
     return tenant_dao.create_tenant(user_data, db)
 
 @tenant_router.post('/create-waitlist-tenant', response_model=Tenant, tags=["Tenants"])
@@ -29,13 +29,13 @@ def tenant_get(t_id: int,
     return tenant_dao.get_tenant(t_id, db)
 
 @tenant_router.put('/update/{id}', response_model_exclude_unset=True, tags=["Tenants"])
-def tenant_up(t_id: int, tenant_update: TenantUpdate,
-              db: Session = Depends(get_session), user: User = Depends(has_role)):
+def tenant_up(t_id: int, tenant_update: TenantUpdate, user: User,
+              db: Session = Depends(get_session)):
     tenant_dao.update_tenant(t_id, tenant_update, db)
 
 @tenant_router.delete('/delete/{id}', tags=["Tenants"])
-def user_delete(t_id: int,
-                db: Session = Depends(get_session), user: User = Depends(has_role)):
+def user_delete(t_id: int, user: User,
+                db: Session = Depends(get_session)):
     tenant_dao.delete_tenant(t_id, db)
 
 @tenant_router.get('/all-tenants', tags=["Tenants"])

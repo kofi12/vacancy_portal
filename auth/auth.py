@@ -10,7 +10,6 @@ from database.user_dao import get_user_by_email, create_user
 from fastapi_sso.sso.google import GoogleSSO
 from authentication import create_access_token
 from dotenv import load_dotenv
-import json
 import os
 
 load_dotenv()
@@ -38,10 +37,9 @@ async def auth_callback(request: Request, db: Session = Depends(get_session)):
     try:
         with sso:
             user = await sso.verify_and_process(request)
+
             email = user.__dict__['email']
-            user_stored = get_user_by_email(email, db)
             access_token = create_access_token(user)
-            print(access_token)
 
         response = RedirectResponse(url="/", status_code=status.HTTP_302_FOUND)
         response.set_cookie(SESSION_COOKIE_NAME, access_token)
