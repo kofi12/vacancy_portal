@@ -14,7 +14,7 @@ import os
 tenant_router = APIRouter(prefix='/tenants')
 
 @tenant_router.post('/create-tenant', response_model=Tenant, tags=["Tenants"])
-def tenant_create(user_data: TenantBase, user: User,
+def tenant_create(user_data: TenantBase,
                 db: Session = Depends(get_session)):
     return tenant_dao.create_tenant(user_data, db)
 
