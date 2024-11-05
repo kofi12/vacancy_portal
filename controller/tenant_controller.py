@@ -7,7 +7,6 @@ from database import tenant_dao
 from controller.upload_pdf import upload_f
 from controller.download_pdf import download_f
 from models.models import User
-from dotenv import load_dotenv
 from authentication import get_current_user
 import os
 

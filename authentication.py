@@ -111,7 +111,7 @@ def get_current_user(db: Session = Depends(get_session), access_token: str = Dep
         )
 
     return claims
-
+#TODO: get user from claims, check user role
 def has_permission(db: Session = Depends(get_session) , access_token: str = Depends(COOKIE)):
     try:
         if not access_token:

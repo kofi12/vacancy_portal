@@ -1,3 +1,4 @@
+from sys import prefix
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from sqlmodel import SQLModel
@@ -5,7 +6,7 @@ from database import db
 from controller import tenant_controller, user_controller
 from auth import auth
 
-app = FastAPI()
+app = FastAPI(prefix='/api')
 SQLModel.metadata.create_all(db.engine)
 app.add_middleware(
     CORSMiddleware,
