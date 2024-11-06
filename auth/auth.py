@@ -16,7 +16,7 @@ load_dotenv()
 GOOGLE_CLIENT_ID = os.getenv('GOOGLE_CLIENT_ID', '')
 GOOGLE_CLIENT_SECRET = os.getenv('GOOGLE_CLIENT_SECRET', '')
 SESSION_COOKIE_NAME = os.getenv('SESSION_COOKIE_NAME', '')
-redirect_uri = 'http://localhost:8000/auth/callback'
+redirect_uri = 'http://www.vacancyportal.ca'
 
 sso = GoogleSSO(GOOGLE_CLIENT_ID,
                 GOOGLE_CLIENT_SECRET,
