@@ -6,7 +6,7 @@ from sqlmodel import Session, select
 from database.db import get_session
 from database import user_dao
 
-user_router = APIRouter(prefix='/users')
+user_router = APIRouter(prefix='/api/users')
 
 #sign-up
 @user_router.post('/signup', response_model=User, response_model_exclude={"hashed_password"}, tags=["Users"])

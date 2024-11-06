@@ -10,7 +10,7 @@ from models.models import User
 from authentication import get_current_user
 import os
 
-tenant_router = APIRouter(prefix='/tenants')
+tenant_router = APIRouter(prefix='/api/tenants')
 
 @tenant_router.post('/create-tenant', response_model=Tenant, tags=["Tenants"])
 def tenant_create(user_data: TenantBase,

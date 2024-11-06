@@ -24,7 +24,7 @@ sso = GoogleSSO(GOOGLE_CLIENT_ID,
                 allow_insecure_http=True
                 )
 
-auth_router = APIRouter(prefix='/auth')
+auth_router = APIRouter(prefix='/api/auth')
 
 @auth_router.get('/login', tags=['Auth'])
 async def auth_init():

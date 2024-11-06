@@ -6,7 +6,7 @@ from database import db
 from controller import tenant_controller, user_controller
 from auth import auth
 
-app = FastAPI(prefix='/api')
+app = FastAPI()
 SQLModel.metadata.create_all(db.engine)
 app.add_middleware(
     CORSMiddleware,
