@@ -10,7 +10,7 @@ app = FastAPI()
 # SQLModel.metadata.create_all(db.engine)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://www.vacancyportal.ca"],  # Adjust this as needed
+    allow_origins=["http://www.vacancyportal.ca", "https://www.vacancyportal.ca"],  # Adjust this as needed
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
