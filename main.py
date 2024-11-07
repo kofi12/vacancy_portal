@@ -7,10 +7,10 @@ from controller import tenant_controller, user_controller
 from auth import auth
 
 app = FastAPI()
-SQLModel.metadata.create_all(db.engine)
+# SQLModel.metadata.create_all(db.engine)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://127.0.0.1:8000"],  # Adjust this as needed
+    allow_origins=["http://www.vacancyportal.ca"],  # Adjust this as needed
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
