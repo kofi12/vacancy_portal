@@ -1,4 +1,5 @@
 from fastapi import Depends, status, APIRouter, UploadFile
+from fastapi.security import SecurityScopes, OAuth2AuthorizationCodeBearer
 from models.models import Tenant
 from models.schemas import TenantUpdate, TenantBase
 from sqlmodel import Session
@@ -10,10 +11,12 @@ from models.models import User
 from authentication import get_current_user
 import os
 
+oauth2_scheme = OAuth2AuthorizationCodeBearer(authorizationUrl="https://accounts.google.com/o/oauth2/v2/auth", tokenUrl="token")
 tenant_router = APIRouter(prefix='/api/tenants')
 
+
 @tenant_router.post('/create-tenant', response_model=Tenant, tags=["Tenants"])
-def tenant_create(user_data: TenantBase,
+def tenant_create(security_scopes: SecurityScopes, user_data: TenantBase,
                 db: Session = Depends(get_session)):
     return tenant_dao.create_tenant(user_data, db)
 
