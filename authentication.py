@@ -20,8 +20,6 @@ load_dotenv()
 JWT_SECRET = os.getenv("JWT_SECRET", '')
 JWT_ALGO = os.getenv("JWT_ALGO", '')
 SESSION_COOKIE_NAME = os.getenv("SESSION_COOKIE_NAME", '')
-
-
 COOKIE = APIKeyCookie(name=SESSION_COOKIE_NAME, auto_error=False)
 
 # create a function to return scopes, to be used as a dependency
@@ -29,18 +27,14 @@ COOKIE = APIKeyCookie(name=SESSION_COOKIE_NAME, auto_error=False)
 class BearAuthException(Exception):
     pass
 
-
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
-
 
 def verify_password(plain_password, hashed_password):
     return pwd_context.verify(plain_password, hashed_password)
 
-
 def get_password_hash(password):
     return pwd_context.hash(password)
-
 
 def create_access_token(user_dict: OpenID | None):
     payload = {}
