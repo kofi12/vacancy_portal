@@ -17,7 +17,7 @@ class User (SQLModel, table=True):
     first_name: str | None
     last_name: str | None
     organization: str | None
-    role: str | None = Field(default='member')
+    role: str | None = Field(default='worker')
 
 class Document (SQLModel, table=True):
     __tablename__: str = "documents"
