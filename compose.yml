@@ -1,0 +1,29 @@
+name: vacancy_portal
+
+services:
+  app:
+    image: akhaizel/vacancy_portal
+    build: .
+    environment:
+      - DATABASE_URL=postgresql://test_user:test_password@db_test:5432/test_db
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db_test
+    volumes:
+      - .:/app
+
+  db_test:
+    image: postgres:latest
+    container_name: test_postgres
+    environment:
+      POSTGRES_USER: test_user
+      POSTGRES_PASSWORD: test_password
+      POSTGRES_DB: test_db
+    ports:
+      - "5433:5432"
+    volumes:
+      - db_test_data:/var/lib/postgresql/data
+
+volumes:
+  db_test_data:
