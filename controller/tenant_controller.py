@@ -11,7 +11,11 @@ from models.models import User
 from authentication import get_current_user
 import os
 
-oauth2_scheme = OAuth2AuthorizationCodeBearer(authorizationUrl="https://accounts.google.com/o/oauth2/v2/auth", tokenUrl="token")
+oauth2_scheme = OAuth2AuthorizationCodeBearer(authorizationUrl="https://accounts.google.com/o/oauth2/v2/auth",
+                                              tokenUrl="token",
+                                              scopes={"tenant:read": "Read tenant data", "tenant:write": "Write tenant data"}
+                                              )
+
 tenant_router = APIRouter(prefix='/api/tenants')
 
 

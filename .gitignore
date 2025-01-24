@@ -5,3 +5,4 @@ migrations/
 alembic.ini
 .env
 .idea/
+.zed/

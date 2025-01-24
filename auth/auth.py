@@ -26,7 +26,7 @@ sso = GoogleSSO(GOOGLE_CLIENT_ID,
 
 auth_router = APIRouter(prefix='/api/auth')
 
-@auth_router.get('/login', tags=['Auth'])
+@auth_router.get('/token', tags=['Auth'])
 async def auth_init():
     with sso:
         return await sso.get_login_redirect()

@@ -106,6 +106,7 @@ def get_current_user(db: Session = Depends(get_session), access_token: str = Dep
         )
 
     return user
+
 #TODO: get user from claims, check user role
 def has_permission(db: Session = Depends(get_session) , access_token: str = Depends(COOKIE)):
     try:
@@ -123,7 +124,7 @@ def has_permission(db: Session = Depends(get_session) , access_token: str = Depe
             )
         return True
     except:
-        raise HTTPException(
+        raise HTTPException (
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail='insufficient permissions',
                 headers={"WWW-Authenticate": "Bearer"}
