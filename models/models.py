@@ -1,6 +1,7 @@
 from sqlmodel import SQLModel, Field
 from datetime import datetime
 from sqlalchemy import Column, String
+from enum import Enum
 
 class Tenant (SQLModel, table=True):
     __tablename__: str = "tenants"
@@ -17,7 +18,7 @@ class User (SQLModel, table=True):
     first_name: str | None
     last_name: str | None
     organization: str | None
-    role: str | None = Field(default='worker')
+    role: str | None = Field(default='scworker')
 
 class Document (SQLModel, table=True):
     __tablename__: str = "documents"
@@ -25,3 +26,8 @@ class Document (SQLModel, table=True):
     file_name: str | None
     url: str | None
     tenant_id: int | None = Field(default=None, foreign_key='tenants.id')
+
+class UserRole (str, Enum):
+    ADMIN = "admin"
+    SCWORKER = "scworker"
+    OWNER = "owner"

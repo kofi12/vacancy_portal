@@ -1,5 +1,6 @@
 from pydantic import BaseModel
 from datetime import datetime
+from models.models import UserRole
 
 class TenantBase(BaseModel):
     name: str
@@ -17,12 +18,11 @@ class UserBase(BaseModel):
     last_name: str
     email: str
     organization: str | None = None
-    role: str = 'member'
+    role: UserRole = UserRole.SCWORKER
 
 class UserUpdate(BaseModel):
     name: str | None = None
     organization: str | None = None
-    role: str | None = 'member'
 
 class DocumentDown (BaseModel):
     file_name: str

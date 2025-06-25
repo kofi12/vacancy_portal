@@ -5,25 +5,25 @@ services:
     image: akhaizel/vacancy_portal
     build: .
     environment:
-      - DATABASE_URL=postgresql://test_user:test_password@db_test:5432/test_db
+      - DATABASE_URL=postgresql://prod_user:prod_password@db_prod:5432/prod_db
     ports:
       - "8000:8000"
     depends_on:
-      - db_test
+      - db_prod
     volumes:
       - .:/app
 
-  db_test:
+  db_prod:
     image: postgres:latest
-    container_name: test_postgres
+    container_name: prod_postgres
     environment:
-      POSTGRES_USER: test_user
-      POSTGRES_PASSWORD: test_password
-      POSTGRES_DB: test_db
+      POSTGRES_USER: prod_user
+      POSTGRES_PASSWORD: prod_password
+      POSTGRES_DB: prod_db
     ports:
-      - "5433:5432"
+      - "5432:5432"
     volumes:
-      - db_test_data:/var/lib/postgresql/data
+      - db_prod_data:/var/lib/postgresql/data
 
 volumes:
-  db_test_data:
+  db_prod_data:
