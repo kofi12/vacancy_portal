@@ -6,6 +6,8 @@ services:
     build: .
     environment:
       - DATABASE_URL=postgresql://test_user:test_password@db_test:5432/test_db
+    env_file:
+      - .env
     ports:
       - "8000:8000"
     depends_on:

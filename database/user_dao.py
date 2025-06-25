@@ -1,7 +1,7 @@
 from fastapi import Depends, status
 from fastapi.exceptions import HTTPException
 from sqlmodel import Session, select
-from models.models import User
+from models.models import User, UserRole
 from models.schemas import UserUpdate, UserBase
 from .db import get_session
 from controller.utils import hash_passwd
@@ -14,7 +14,7 @@ def create_user(user_data: UserBase,
     if not user_exists(user_data, db):
         user = User(
             **user_data_dict,
-            role = 'member',
+            role = UserRole.PENDING,
         )
 
         db.add(user)
@@ -73,3 +73,14 @@ def get_user_by_email(email: str,
     statement = select(User).where(User.email == email)
     result = db.exec(statement).first()
     return result
+
+def update_user_role(user_id: int, role: UserRole, db: Session = Depends(get_session)):
+    statement = select(User).where(User.id == user_id)
+    user = db.exec(statement).first()
+    if not user:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
+    user.role = role
+    db.add(user)
+    db.commit()
+    db.refresh(user)
+    return user
