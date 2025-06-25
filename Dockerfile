@@ -1,5 +1,5 @@
 # Use a lightweight Python base image
-FROM python:3.11-slim AS python-base
+FROM python:alpine
 
 # Install Poetry
 RUN pip install --no-cache-dir poetry==1.8.2 && poetry config virtualenvs.create false
