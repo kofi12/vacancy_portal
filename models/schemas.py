@@ -24,6 +24,17 @@ class UserUpdate(BaseModel):
     name: str | None = None
     organization: str | None = None
 
+class OrganizationBase(BaseModel):
+    business_name: str
+    address: str
+    number_of_beds: int | None = None
+    operator_name: str | None = None
+    role: UserRole = UserRole.OWNER
+
+class OrganizationUpdate(BaseModel):
+    number_of_beds: int | None = None
+    operator_name: str | None = None
+
 class DocumentDown (BaseModel):
     file_name: str
     url: str

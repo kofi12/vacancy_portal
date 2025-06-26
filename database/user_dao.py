@@ -4,7 +4,7 @@ from sqlmodel import Session, select
 from models.models import User, UserRole
 from models.schemas import UserUpdate, UserBase
 from .db import get_session
-from controller.utils import hash_passwd
+
 
 #create user
 def create_user(user_data: UserBase,

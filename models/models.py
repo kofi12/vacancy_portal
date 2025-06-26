@@ -9,6 +9,16 @@ class UserRole (str, Enum):
     OWNER = "owner"
     PENDING = "pending"
 
+class Organization (SQLModel, table=True):
+    __tablename__: str = "organizations"
+    id: int | None = Field(default=None, primary_key=True)
+    business_name: str
+    address: str
+    number_of_beds: int | None = Field(default=None)
+    operator_name: str
+    role: str = Field(default="owner")
+    owner_id: int = Field(default=None, foreign_key="users.id")
+
 class Tenant (SQLModel, table=True):
     __tablename__: str = "tenants"
     id: int | None = Field(default=None, primary_key=True)
@@ -23,8 +33,8 @@ class User (SQLModel, table=True):
     email: str = Field(sa_column=Column("email", String, unique=True))
     first_name: str | None
     last_name: str | None
-    organization: str | None
-    role: UserRole = Field(default=UserRole.SCWORKER)
+    community_org: str | None
+    role: str = Field(default="scworker")
 
 class Document (SQLModel, table=True):
     __tablename__: str = "documents"
