@@ -78,7 +78,7 @@ def delete_tenant(id: int, db: Session = Depends(get_session)):
     db.delete(tenant)
 
 #get all tenants
-def get_tenants(db: Session = Depends(get_session)):
+def get_tenants(db: Session = Depends(get_session)) -> dict:
     tenants = []
     statement = select(Tenant).where(Tenant.waitlist == False)
     tenants = db.exec(statement).all()

@@ -8,7 +8,7 @@ from db import get_session
 
 
 #create organization
-def create_organization(org_data: OrganizationBase,
+def create_org(org_data: OrganizationBase,
                         db: Session = Depends(get_session)):
     org_data_dict = org_data.model_dump()
     if not org_exists(org_data_dict['owner_id'], db):
@@ -20,22 +20,51 @@ def create_organization(org_data: OrganizationBase,
     raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Organization already exists")
 
 #get organization
-def get_organization(id: int, db: Session = Depends(get_session)) -> Organization | None:
+def get_org(id: int, db: Session = Depends(get_session)) -> Organization | None:
     statement = select(Organization).where(id == Organization.id)
     result = db.exec(statement).first()
     return result
 
+def get_all_orgs(db: Session = Depends(get_session)) -> dict:
+    statement = select(Organization)
+    result = db.exec(statement).all()
+    return {'orgs': result}
+
 #update organization
+def update_org(org_id: int, org_data: OrganizationUpdate,
+               db: Session = Depends(get_session)):
+    statement = select(Organization).where(org_id == Organization.id)
+    try:
+        org = db.exec(statement).first()
+    except:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, 'Organization does not exist')
+
+    org = Organization(
+        **org_data.model_dump(exclude_unset=True)
+    )
+    db.commit()
 
 #delete organization
-
+def delete_org(org_id: int, db: Session = Depends(get_session)):
+    statement = select(Organization).where(org_id == Organization.id)
+    try:
+        org = db.exec(statement).first()
+    except:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, 'Organization does not exist')
+    db.delete(org)
+    db.commit()
 
 def org_exists(owner_id: int, db: Session = Depends(get_session)) -> bool:
     org = get_org_by_owner(owner_id, db)
     return org is not None
 
 def get_org_by_owner(owner_id: int,
-                             db: Session = Depends(get_session)) -> Organization | None:
-    statement = select(Organization).where(owner_id == Organization.owner_id)
-    result = db.exec(statement).first()
-    return result
+                    db: Session = Depends(get_session)) -> Organization | None:
+    try:
+        statement = select(Organization).where(owner_id == Organization.owner_id)
+        result = db.exec(statement).first()
+        return result
+    except:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, 'Organization not found')
+        return None
+

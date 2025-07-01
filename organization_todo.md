@@ -17,26 +17,26 @@
 
 ## 3. Add CRUD Endpoints
 
-- [ ] Create a new router/controller (e.g., `controller/organization_controller.py`).
-- [ ] Implement endpoints:
-  - [ ] Create organization
-  - [ ] Get organization by ID
-  - [ ] Update organization
-  - [ ] Delete organization
-  - [ ] List all organizations
+- [ x] Create a new router/controller (e.g., `controller/organization_controller.py`).
+- [x ] Implement endpoints:
+  - [x ] Create organization
+  - [x ] Get organization by ID
+  - [ x] Update organization
+  - [ x] Delete organization
+  - [ x] List all organizations
 
 ## 4. Update Schemas
 
-- [ ] Add Pydantic schemas for Organization (e.g., `OrganizationBase`, `OrganizationCreate`, `OrganizationRead`, `OrganizationUpdate`) in `models/schemas.py`.
+- [ x] Add Pydantic schemas for Organization (e.g., `OrganizationBase`, `OrganizationCreate`, `OrganizationRead`, `OrganizationUpdate`) in `models/schemas.py`.
 
 ## 5. Add DAO Functions
 
-- [ ] Implement DAO functions for organization CRUD in `database/organization_dao.py`.
+- [ x] Implement DAO functions for organization CRUD in `database/organization_dao.py`.
 
 ## 6. (Optional) Set Up Associations
 
-- [ ] Link users or tenants to organizations via a foreign key if needed.
-- [ ] Update models and migrations accordingly.
+- [x ] Link users or tenants to organizations via a foreign key if needed.
+- [x] Update models and migrations accordingly.
 
 ## 7. Permissions & Access Control
 
