@@ -1,3 +1,4 @@
+from datetime import UTC, datetime, timedelta
 from passlib.context import CryptContext
 from jose import JWTError, jwt
 from jose.constants import ALGORITHMS
@@ -23,7 +24,6 @@ SESSION_COOKIE_NAME = os.getenv("SESSION_COOKIE_NAME", '')
 COOKIE = APIKeyCookie(name=SESSION_COOKIE_NAME, auto_error=False)
 
 # create a function to return scopes, to be used as a dependency
-
 class BearAuthException(Exception):
     pass
 
@@ -37,34 +37,20 @@ def get_password_hash(password):
     return pwd_context.hash(password)
 
 def create_access_token(user_dict: OpenID | None):
-    payload = {}
-    scopes = []
-    if user_dict.__dict__['display_name'] == "Aaron Haizel":
-        scopes = ['tenant:read',
-                  'tenant:write',
-                  'user:read',
-                  'user:write',
-        ]
-    else:
-        scopes = ['waitlist:read',
-                  'waitlist:write',
-                  'user:read',
-                  'user:write'
-        ]
-
-    payload['user'] = user_dict.__dict__
-    payload['exp'] = 3600
-    payload['jti'] = str(uuid.uuid4())
-    payload['refresh'] = True
-    payload['scopes'] = scopes
-
+    if user_dict is None:
+        raise ValueError("user_dict cannot be None")
+    payload = {
+        "sub": user_dict.email,# unique identifier       # user role if needed
+        "exp": datetime.now(UTC) + timedelta(seconds=3600),
+        "jti": str(uuid.uuid4()),
+        "scopes": [],
+    }
     encoded_jwt = jwt.encode(
         payload,
         JWT_SECRET,
         algorithm=JWT_ALGO
     )
     return encoded_jwt
-
 
 def get_token_payload(session_token: str):
     try:
@@ -82,7 +68,6 @@ def get_token_payload(session_token: str):
     except JWTError:
         raise BearAuthException("Token could not be validated")
 
-
 # def authenticate_user(db: Session, username: str, password: str, provider: str):
 #     user = db.query(User).filter(User.username == username).first()
 #     if not user:
@@ -91,13 +76,19 @@ def get_token_payload(session_token: str):
 #         return False
 #     return user
 
-
 def get_current_user(db: Session = Depends(get_session), access_token: str = Depends(COOKIE)):
+    if not access_token:
+        return None
     try:
-        if not access_token:
-            return None
         claims = get_token_payload(access_token)
-        user = claims['user']
+        email = claims['claims'].get("sub")
+        if not email:
+            raise BearAuthException("Token missing subject")
+
+        user = get_user_by_email(email, db)
+        if not user:
+            raise HTTPException(status_code=404, detail="User not found")
+        return user
     except BearAuthException:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -105,27 +96,13 @@ def get_current_user(db: Session = Depends(get_session), access_token: str = Dep
             headers={"WWW-Authenticate": "Bearer"}
         )
 
-    return user
-
-#TODO: get user from claims, check user role
-def has_permission(db: Session = Depends(get_session) , access_token: str = Depends(COOKIE)):
-    try:
-        if not access_token:
-            return None
-        claims = get_token_payload(access_token)
-        # email = user_data['user']['email']
-        # user = get_user_by_email(email, db)
-        print(claims['scopes'])
-
-        if claims['scopes'] !=  ['tenant:read', 'tenant:write', 'user:read', 'user:write']:
+def require_roles(*allowed_roles: str):
+    def role_dependency(current_user: User = Depends(get_current_user)):
+        if current_user.role not in allowed_roles:
+            allowed = ", ".join(allowed_roles)
             raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED,
-                detail='insufficient permissions'
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail=f"Operation requires one of the roles [{allowed}], but user role is '{current_user.role}'."
             )
-        return True
-    except:
-        raise HTTPException (
-                status_code=status.HTTP_401_UNAUTHORIZED,
-                detail='insufficient permissions',
-                headers={"WWW-Authenticate": "Bearer"}
-        )
+        return current_user
+    return role_dependency

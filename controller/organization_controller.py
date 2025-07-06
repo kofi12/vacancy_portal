@@ -4,6 +4,7 @@ from models.schemas import OrganizationBase, OrganizationUpdate
 from sqlmodel import Session
 from database.db import get_session
 from database import org_dao
+from authentication import require_roles
 
 org_router = APIRouter(prefix='/api/orgs')
 

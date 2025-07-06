@@ -3,12 +3,6 @@ from datetime import datetime
 from sqlalchemy import Column, String
 from enum import Enum
 
-class UserRole (str, Enum):
-    ADMIN = "admin"
-    SCWORKER = "scworker"
-    OWNER = "owner"
-    PENDING = "pending"
-
 class Organization (SQLModel, table=True):
     __tablename__: str = "organizations"
     id: int | None = Field(default=None, primary_key=True)

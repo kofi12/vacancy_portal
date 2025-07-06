@@ -1,7 +1,7 @@
 from fastapi import Depends, status
 from fastapi.exceptions import HTTPException
 from sqlmodel import Session, select
-from models.models import User, UserRole
+from models.models import User
 from models.schemas import UserUpdate, UserBase
 from .db import get_session
 
@@ -14,7 +14,7 @@ def create_user(user_data: UserBase,
     if not user_exists(user_data, db):
         user = User(
             **user_data_dict,
-            role = UserRole.PENDING,
+            role = "pending",
         )
 
         db.add(user)
@@ -74,7 +74,7 @@ def get_user_by_email(email: str,
     result = db.exec(statement).first()
     return result
 
-def update_user_role(user_id: int, role: UserRole, db: Session = Depends(get_session)):
+def update_user_role(user_id: int, role: str, db: Session = Depends(get_session)):
     statement = select(User).where(User.id == user_id)
     user = db.exec(statement).first()
     if not user:

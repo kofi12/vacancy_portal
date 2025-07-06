@@ -2,7 +2,7 @@ from fastapi import Depends, status, APIRouter, Request
 from fastapi.exceptions import HTTPException
 from fastapi.responses import RedirectResponse
 from authentication import SESSION_COOKIE_NAME, get_current_user
-from models.models import User, UserRole
+from models.models import User
 from models.schemas import UserUpdate, UserBase
 from sqlmodel import Session, select
 from database.db import get_session
@@ -48,14 +48,19 @@ async def auth_callback(request: Request, db: Session = Depends(get_session)):
                     first_name=user.__dict__['given_name'],
                     last_name=user.__dict__['family_name'],
                     organization=user.__dict__['organization'],
-                    role=UserRole.PENDING
                 )
                 db_user = create_user(user_data, db)
 
             access_token = create_access_token(user)
 
         response = RedirectResponse(url="/", status_code=status.HTTP_302_FOUND)
-        response.set_cookie(SESSION_COOKIE_NAME, access_token)
+        response.set_cookie(
+            key=SESSION_COOKIE_NAME,
+            value=access_token,
+            httponly=True,
+            secure=True,  # set to False only if testing over HTTP
+            samesite="lax",  # or "Strict" depending on behavior
+        )
         return response
     except ValueError as e:
         raise HTTPException(status_code=400, detail=f"{e}")
@@ -64,8 +69,8 @@ async def auth_callback(request: Request, db: Session = Depends(get_session)):
             status_code=500, detail=f"An unexpected error occurred. Report this message to support: {e}")
 
 @auth_router.post("/set-role", tags=["Auth"])
-def set_role(role: UserRole, current_user: User = Depends(get_current_user), db: Session = Depends(get_session)):
-    if current_user.role != UserRole.PENDING:
+def set_role(role: str, current_user: User = Depends(get_current_user), db: Session = Depends(get_session)):
+    if current_user.role != "pending":
         raise HTTPException(status_code=400, detail="Role already set.")
     if current_user.id is None:
         raise HTTPException(status_code=400, detail="User ID is missing.")
