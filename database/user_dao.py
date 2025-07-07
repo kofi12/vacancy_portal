@@ -14,7 +14,6 @@ def create_user(user_data: UserBase,
     if not user_exists(user_data, db):
         user = User(
             **user_data_dict,
-            role = "pending",
         )
 
         db.add(user)

@@ -17,7 +17,6 @@ class UserBase(BaseModel):
     last_name: str
     email: str
     community_org: str | None = None
-    role: str = "pending"
 
 class UserUpdate(BaseModel):
     name: str | None = None
