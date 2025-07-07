@@ -45,9 +45,8 @@ async def auth_callback(request: Request, db: Session = Depends(get_session)):
             if not db_user:
                 user_data = UserBase(
                     email=email,
-                    first_name=user.__dict__['given_name'],
-                    last_name=user.__dict__['family_name'],
-                    organization=user.__dict__['organization'],
+                    first_name=user.__dict__['first_name'],
+                    last_name=user.__dict__['last_name'],
                 )
                 db_user = create_user(user_data, db)
 

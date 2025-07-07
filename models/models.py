@@ -27,7 +27,7 @@ class User (SQLModel, table=True):
     first_name: str | None
     last_name: str | None
     community_org: str | None
-    role: str = Field(default="scworker")
+    role: str = Field(default="pending")
 
 class Document (SQLModel, table=True):
     __tablename__: str = "documents"

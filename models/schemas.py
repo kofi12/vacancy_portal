@@ -16,12 +16,12 @@ class UserBase(BaseModel):
     first_name: str
     last_name: str
     email: str
-    organization: str | None = None
-    role: str = "scworker"
+    community_org: str | None = None
+    role: str = "pending"
 
 class UserUpdate(BaseModel):
     name: str | None = None
-    organization: str | None = None
+    community_org: str | None = None
 
 class OrganizationBase(BaseModel):
     business_name: str
