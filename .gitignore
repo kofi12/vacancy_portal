@@ -2,7 +2,6 @@
 .vscode/
 __pycache__
 migrations/
-alembic.ini
 .env
 .idea/
 .zed/
