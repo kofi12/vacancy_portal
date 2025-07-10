@@ -1,7 +1,7 @@
 from fastapi import Depends, status, APIRouter, Request
 from fastapi.exceptions import HTTPException
 from fastapi.responses import RedirectResponse
-from authentication import SESSION_COOKIE_NAME, get_current_user
+from authentication import SESSION_COOKIE_NAME, get_current_user_with_scopes
 from models.models import User
 from models.schemas import UserUpdate, UserBase
 from sqlmodel import Session, select
@@ -16,7 +16,7 @@ load_dotenv()
 GOOGLE_CLIENT_ID = os.getenv('GOOGLE_CLIENT_ID', '')
 GOOGLE_CLIENT_SECRET = os.getenv('GOOGLE_CLIENT_SECRET', '')
 SESSION_COOKIE_NAME = os.getenv('SESSION_COOKIE_NAME', '')
-redirect_uri = 'https://vacancyportal.ca/api/auth/callback'
+redirect_uri = 'http://localhost:8000/api/auth/callback'
 
 sso = GoogleSSO(GOOGLE_CLIENT_ID,
                 GOOGLE_CLIENT_SECRET,
@@ -50,17 +50,10 @@ async def auth_callback(request: Request, db: Session = Depends(get_session)):
                 )
                 db_user = create_user(user_data, db)
 
-            access_token = create_access_token(user)
+            access_token = create_access_token(user, db)
 
-        response = RedirectResponse(url="/", status_code=status.HTTP_302_FOUND)
-        response.set_cookie(
-            key=SESSION_COOKIE_NAME,
-            value=access_token,
-            httponly=True,
-            secure=True,  # set to False only if testing over HTTP
-            samesite="lax",  # or "Strict" depending on behavior
-        )
-        return response
+        # Return the token in the response body as per OAuth2 standard
+        return {"access_token": access_token, "token_type": "bearer"}
     except ValueError as e:
         raise HTTPException(status_code=400, detail=f"{e}")
     except Exception as e:
@@ -68,7 +61,7 @@ async def auth_callback(request: Request, db: Session = Depends(get_session)):
             status_code=500, detail=f"An unexpected error occurred. Report this message to support: {e}")
 
 @auth_router.post("/set-role", tags=["Auth"])
-def set_role(role: str, current_user: User = Depends(get_current_user), db: Session = Depends(get_session)):
+def set_role(role: str, current_user: User = Depends(get_current_user_with_scopes), db: Session = Depends(get_session)):
     if current_user.role != "pending":
         raise HTTPException(status_code=400, detail="Role already set.")
     if current_user.id is None:
