@@ -5,6 +5,7 @@ class TenantBase(BaseModel):
     name: str
     admission_date: datetime | None = None
     waitlist: bool = False
+    organization_id: int
 
 class TenantUpdate(BaseModel):
     name: str | None = None

@@ -1,25 +1,25 @@
-from fastapi import Depends, status, APIRouter
+from fastapi import Depends, status, APIRouter, Security
 from fastapi.exceptions import HTTPException
 from models.models import User
 from models.schemas import UserUpdate, UserBase
 from sqlmodel import Session, select
 from database.db import get_session
 from database import user_dao
-from authentication import require_roles
+from authentication import require_roles, get_current_user_with_scopes
 
 user_router = APIRouter(prefix='/api/users')
 
 @user_router.get('/user/{id}', response_model=User, tags=["Users"])
 def user_get(id: int,
-             db: Session = Depends(get_session), user: User = Depends(require_roles("admin", "scworker"))):
+             db: Session = Depends(get_session), user: User = Security(get_current_user_with_scopes, scopes=["view:profile"])):
     return user_dao.get_user(id, db)
 
 @user_router.put('/update/{id}', response_model_exclude_unset=True, tags=["Users"])
 def user_update(id: int, user_update: UserUpdate,
-                 db: Session = Depends(get_session), user: User = Depends(require_roles("admin", "scworker"))):
+                 db: Session = Depends(get_session), user: User = Security(get_current_user_with_scopes, scopes=["write:profile"])):
     user_dao.update_user(id, user_update, db)
 
 @user_router.delete('/delete/{id}', tags=["Users"])
 def user_delete(id: int,
-                db: Session = Depends(get_session), user: User = Depends(require_roles("admin", "scworker"))):
+                db: Session = Depends(get_session), user: User = Security(get_current_user_with_scopes, scopes=["write:profile"])):
     user_dao.delete_user(id, db)

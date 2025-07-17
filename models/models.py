@@ -19,6 +19,7 @@ class Tenant (SQLModel, table=True):
     admission_date: datetime | None = Field(default = None)
     discharge_date: datetime | None = Field(default=None)
     waitlist: bool = Field(default=False)
+    organization_id: int = Field(foreign_key="organizations.id")
 
 class User (SQLModel, table=True):
     __tablename__: str = "users"

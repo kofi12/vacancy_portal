@@ -21,6 +21,8 @@ propelauth-fastapi = "^2.1.19"
 fastapi-sso = "^0.15.0"
 python-jose = "^3.3.0"
 passlib = "^1.7.4"
+httpx = "^0.28.1"
+pytest = "^8.4.1"
 
 
 [build-system]

@@ -2,7 +2,7 @@ from datetime import UTC, datetime, timedelta
 from passlib.context import CryptContext
 from jose import JWTError, jwt
 from jose.constants import ALGORITHMS
-from fastapi.security import OAuth2PasswordBearer, APIKeyCookie, SecurityScopes
+from fastapi.security import OAuth2PasswordBearer, SecurityScopes
 from fastapi import Depends, HTTPException, status, Security
 from fastapi_sso.sso.base import OpenID
 from models.models import User
@@ -21,8 +21,6 @@ env_file_path = directory_path / '.env'
 load_dotenv()
 JWT_SECRET = os.getenv("JWT_SECRET", '')
 JWT_ALGO = os.getenv("JWT_ALGO", '')
-SESSION_COOKIE_NAME = os.getenv("SESSION_COOKIE_NAME", '')
-COOKIE = APIKeyCookie(name=SESSION_COOKIE_NAME, auto_error=False)
 
 # create a function to return scopes, to be used as a dependency
 class BearAuthException(Exception):
@@ -73,14 +71,6 @@ def get_token_payload(session_token: str):
         return payload
     except JWTError:
         raise BearAuthException("Token could not be validated")
-
-# def authenticate_user(db: Session, username: str, password: str, provider: str):
-#     user = db.query(User).filter(User.username == username).first()
-#     if not user:
-#         return False
-#     if not verify_password(password, user.password):
-#         return False
-#     return user
 
 def get_current_user_with_scopes(
     security_scopes: SecurityScopes,
