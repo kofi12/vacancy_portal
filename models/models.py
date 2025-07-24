@@ -9,7 +9,6 @@ class Organization (SQLModel, table=True):
     business_name: str
     address: str
     number_of_beds: int | None = Field(default=None)
-    role: str = Field(default="owner")
     owner_id: int = Field(default=None, foreign_key="users.id")
 
 class Tenant (SQLModel, table=True):
