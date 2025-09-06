@@ -6,10 +6,15 @@ from dataclasses import dataclass
 class TenantEntity(BaseEntity):
     """Tenant domain entity with business logic"""
 
-    _name: str
-    _admission_date: datetime | None
-    _organization_id: int
-    _is_waitlist: bool = True
+    def __init__(self, name: str, organization_id: int, admission_date: datetime | None = None):
+        # Call parent constructor
+        super().__init__(None, datetime.now())
+
+        # Set attributes
+        self._name = name
+        self._admission_date = admission_date
+        self._organization_id = organization_id
+        self._is_waitlist = True
 
     def admittable(self) -> bool:
         """Business rule: only tenants on a waitlist can be admitted"""
@@ -25,15 +30,14 @@ class TenantEntity(BaseEntity):
     @classmethod
     def create_tenant(cls,
                       name: str,
-                      organization_id: int):
+                      organization_id: int) -> "TenantEntity":
         """Factory method for creating new tenants with validation"""
         if not name or not name.strip():
             raise ValueError("Tenant name cannot be empty")
         if not organization_id:
             raise ValueError("Valid organization ID required")
 
-        return cls(_name=name,
-                   _admission_date=None,
-                   _organization_id=organization_id,
-                   _is_waitlist=True
+        return cls(name=name,
+                   organization_id=organization_id,
+                   admission_date=None
         )
